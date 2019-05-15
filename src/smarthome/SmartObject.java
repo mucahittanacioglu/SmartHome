@@ -19,8 +19,10 @@ public abstract class SmartObject {
         
     }
     public boolean connect(String IP){
+        System.out.println("---------------------------------------------------------------------------\n---------------------------------------------------------------------------\n"+""
+                + "Adding new SmartObject\n---------------------------------------------------------------------------");
         this.IP=IP;
-        System.out.print(alias+" connection established.");
+        System.out.println(alias+" connection established.");
         return this.connectionStatus=true;
     }
     

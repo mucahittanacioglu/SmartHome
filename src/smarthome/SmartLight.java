@@ -49,6 +49,8 @@ public class SmartLight extends SmartObject implements LocationControl,Programma
      @Override
     public boolean testObject() {
         if(isConnectionStatus()){
+            System.out.println("Test is starting for SmartLight");
+            System.out.println("This is SmartLight device "+this.getAlias());
             SmartObjectToString();
             turnOnLight();
             turnOffLight();
@@ -75,6 +77,7 @@ public class SmartLight extends SmartObject implements LocationControl,Programma
     public void onLeave() {
          if(isConnectionStatus()){
              setHasLightTurned(false);
+             
              System.out.println("Smart Light - "+getAlias() +" is turned off now.(Current time: "+getTimeProper(new GregorianCalendar()) +")");
          }else
              System.out.println(getAlias()+" not connected yet.");
@@ -84,8 +87,9 @@ public class SmartLight extends SmartObject implements LocationControl,Programma
     @Override
     public void onCome() {
         if(isConnectionStatus()){
-             setHasLightTurned(false);
+             setHasLightTurned(false);             
              System.out.println("Smart Light - "+getAlias() +" is turned on now.(Current time: "+getTimeProper(new GregorianCalendar()) +")");
+             
         }else
              System.out.println(getAlias()+" is not connected yet.");    
     }
