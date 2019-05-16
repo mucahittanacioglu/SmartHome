@@ -27,6 +27,8 @@ public class SmartLight extends SmartObject implements LocationControl,Programma
             if(!hasLightTurned){
             programTime = new GregorianCalendar();
             setHasLightTurned(true);
+            setProgramAction(true);
+            setProgramTime(new GregorianCalendar());
             System.out.println("Smart Light - "+getAlias() +" is turned on now (Current time: "+getTimeProper(new GregorianCalendar()) +")");
             }else
                 System.out.println("Smart Light - "+getAlias() +" has been already turned on.");
@@ -37,9 +39,11 @@ public class SmartLight extends SmartObject implements LocationControl,Programma
     public void turnOffLight(){
         if(isConnectionStatus()){
             if(hasLightTurned){
-            programTime = new GregorianCalendar();
-            setHasLightTurned(false);
-            System.out.println("Smart Light - "+getAlias() +" is turned off now (Current time: "+getTimeProper(new GregorianCalendar()) +")");
+                setProgramTime(new GregorianCalendar());
+                setHasLightTurned(false);
+                programAction=true;
+                setProgramTime(new GregorianCalendar());
+                System.out.println("Smart Light - "+getAlias() +" is turned off now (Current time: "+getTimeProper(new GregorianCalendar()) +")");
             }else
                 System.out.println("Smart Light - "+getAlias() +" has been already turned off.");
         }else
@@ -76,7 +80,7 @@ public class SmartLight extends SmartObject implements LocationControl,Programma
     @Override
     public void onLeave() {
          if(isConnectionStatus()){
-             setHasLightTurned(false);
+             turnOffLight();
              
              System.out.println("Smart Light - "+getAlias() +" is turned off now.(Current time: "+getTimeProper(new GregorianCalendar()) +")");
          }else
@@ -87,7 +91,7 @@ public class SmartLight extends SmartObject implements LocationControl,Programma
     @Override
     public void onCome() {
         if(isConnectionStatus()){
-             setHasLightTurned(false);             
+             turnOnLight();
              System.out.println("Smart Light - "+getAlias() +" is turned on now.(Current time: "+getTimeProper(new GregorianCalendar()) +")");
              
         }else
@@ -97,7 +101,7 @@ public class SmartLight extends SmartObject implements LocationControl,Programma
     @Override
     public void setTimer(int seconds) {
         if(isConnectionStatus()){
-            programTime = new GregorianCalendar();
+           
             programTime.add(Calendar.SECOND, seconds);
             
             if(hasLightTurned)
@@ -114,6 +118,7 @@ public class SmartLight extends SmartObject implements LocationControl,Programma
     public void cancelTimer() {
         if(isConnectionStatus()){
             programTime = null;
+            programAction=false;
         }else
              System.out.println(getAlias()+" is not connected yet.");
     
@@ -121,17 +126,22 @@ public class SmartLight extends SmartObject implements LocationControl,Programma
 
     @Override
     public void runProgram() {
+        
         if(isConnectionStatus()){
             if(programAction){
-                if(getTimeProper(programTime).equalsIgnoreCase(getTimeProper(new GregorianCalendar())))
-                    System.out.println("Smart Plug - "+getAlias() +" is turned off now.(Current time: "+getTimeProper(programTime) +")");
-                    hasLightTurned=false;
-                    programTime=null;
-            }else{
-                if(getTimeProper(programTime).equalsIgnoreCase(getTimeProper(new GregorianCalendar())))
-                    System.out.println("Smart Plug - "+getAlias() +" is turned on now.(Current time: "+getTimeProper(programTime) +")");
-                    hasLightTurned=true;
-                    programTime=null;
+               if(isHasLightTurned()){
+                   if(getTimeProper(programTime).equalsIgnoreCase(getTimeProper(new GregorianCalendar()))){
+                        //System.out.println("Smart Plug - "+getAlias() +" is turned off now.(Current time: "+getTimeProper(programTime) +")");
+                        turnOffLight();
+                        programTime=null;
+                    }
+               }else{
+                    if(getTimeProper(programTime).equalsIgnoreCase(getTimeProper(new GregorianCalendar()))){
+                        //System.out.println("Smart Light - "+getAlias() +" is turned on now.(Current time: "+getTimeProper(programTime) +")");
+                        turnOnLight();
+                        programTime=null;
+                    }
+               }    
             }
         }else
              System.out.println(getAlias()+" is not connected yet.");
@@ -165,7 +175,7 @@ public class SmartLight extends SmartObject implements LocationControl,Programma
    
     
     public static String getTimeProper(Calendar cal){
+      return cal.getTime().getHours()+":"+cal.getTime().getMinutes()+":"+cal.getTime().getSeconds();
         
-        return cal.getTime().getHours()+":"+cal.getTime().getMinutes()+":"+cal.getTime().getSeconds();
     }
 }

@@ -29,6 +29,8 @@ public class SmartPlug extends SmartObject implements Programmable{
             if(!isStatus()){
             System.out.println("Smart Plug - "+getAlias() +" is turned on now.(Current time: "+getTimeProper(programTime) +")");
                 setStatus(true);
+                setProgramAction(true);
+                setProgramTime(new GregorianCalendar());
             }else
                 System.out.println("Smart Plug -"+getAlias()+ " has been already turned on.");
         }else{
@@ -42,6 +44,7 @@ public class SmartPlug extends SmartObject implements Programmable{
             if(isStatus()){
             System.out.println("Smart Plug - "+getAlias() +" is turned off now.(Current time: "+getTimeProper(programTime) +")");
             setStatus(false);
+            setProgramTime(new GregorianCalendar());
             }else
                 System.out.println("Smart Plug -"+getAlias()+ " has been already turned off.");
         }else{
@@ -91,6 +94,7 @@ public class SmartPlug extends SmartObject implements Programmable{
     public void cancelTimer() {
         if(isStatus()){
             programTime = null;
+            programAction = false;
         }else
              System.out.println(getAlias()+" is not connected yet.");
     }
@@ -99,15 +103,19 @@ public class SmartPlug extends SmartObject implements Programmable{
     public void runProgram() {
         if(isConnectionStatus()){
             if(programAction){
-                if(getTimeProper(programTime).equalsIgnoreCase(getTimeProper(new GregorianCalendar())))
-                    System.out.println("Smart Plug - "+getAlias() +" is turned off now.(Current time: "+getTimeProper(programTime) +")");
-                    status=false;
-                    programTime=null;
-            }else{
-                if(getTimeProper(programTime).equalsIgnoreCase(getTimeProper(new GregorianCalendar())))
-                    System.out.println("Smart Light - "+getAlias() +" is turned on now.(Current time: "+getTimeProper(programTime) +")");
-                    status=true;
-                    programTime=null;
+                if(isStatus()){
+                    if(getTimeProper(programTime).equalsIgnoreCase(getTimeProper(new GregorianCalendar()))){
+                        System.out.println("Smart Plug - "+getAlias() +" is turned off now.(Current time: "+getTimeProper(programTime) +")");
+                        turnOff();
+                        programTime=null;
+                    }
+                }else{
+                    if(getTimeProper(programTime).equalsIgnoreCase(getTimeProper(new GregorianCalendar()))){
+                        System.out.println("Smart Plug - "+getAlias() +" is turned on now.(Current time: "+getTimeProper(programTime) +")");
+                        turnOn();
+                        programTime=null;
+                    }
+                }
             }
         }else
              System.out.println(getAlias()+" is not connected yet.");
