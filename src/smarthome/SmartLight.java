@@ -133,13 +133,13 @@ public class SmartLight extends SmartObject implements LocationControl,Programma
                    if(getTimeProper(programTime).equalsIgnoreCase(getTimeProper(new GregorianCalendar()))){
                         //System.out.println("Smart Plug - "+getAlias() +" is turned off now.(Current time: "+getTimeProper(programTime) +")");
                         turnOffLight();
-                        programTime=null;
+                        cancelTimer();
                     }
                }else{
                     if(getTimeProper(programTime).equalsIgnoreCase(getTimeProper(new GregorianCalendar()))){
                         //System.out.println("Smart Light - "+getAlias() +" is turned on now.(Current time: "+getTimeProper(programTime) +")");
                         turnOnLight();
-                        programTime=null;
+                        cancelTimer();
                     }
                }    
             }
